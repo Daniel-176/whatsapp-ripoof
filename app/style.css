@@ -1,0 +1,141 @@
+/* Reset some default styles */
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+/* Container for the chat interface */
+.chat-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    flex: 1;
+    background-color: #f2f2f2;
+    padding: 20px;
+}
+
+.sidebar-header {
+    margin-bottom: 20px;
+}
+
+.sidebar-header h1 {
+    font-size: 24px;
+}
+
+.chat-list {
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+}
+
+.chat-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    cursor: pointer;
+}
+
+.chat-item.active {
+    background-color: #e6e6e6;
+}
+
+.chat-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.chat-details {
+    flex: 1;
+}
+
+.chat-details h2 {
+    font-size: 16px;
+    margin: 0;
+}
+
+.chat-details p {
+    font-size: 14px;
+    margin: 0;
+    color: #888;
+}
+
+/* Chat section */
+.chat-section {
+    flex: 2;
+    padding: 20px;
+    border-left: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.chat-header img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.chat-header h1 {
+    font-size: 20px;
+    margin: 0;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.message {
+    margin-bottom: 10px;
+    max-width: 80%;
+    word-wrap: break-word;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.message.received {
+    background-color: #e6e6e6;
+    align-self: flex-start;
+}
+
+.message.sent {
+    background-color: #dcf8c6;
+    align-self: flex-end;
+}
+
+.message p {
+    margin: 0;
+}
+
+.message-input {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

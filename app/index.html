@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WhatsApp DM</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>Guest</h1>
+            </div>
+            <div class="chat-list">
+                <div class="chat-item active">
+                    <img src="profile.webp" alt="Profile Picture">
+                    <div class="chat-details">
+                        <h2>Log-In Agent</h2>
+                        <p>Form</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="chat-section">
+            <div class="chat-header">
+                <img src="profile.webp" alt="Profile Picture">
+                <h1>login</h1>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message received">
+                    <p>Hello, please log in!</p>
+                </div>
+                <div class="message sent" id="message-input">
+                    <form id="login-form">
+                        <label for="username">Username:</label>
+                        <input type="text" name="username" placeholder="Enter your username" id="username">
+                        <button type="submit">Log In</button>
+                    </form>
+                </div>
+            </div>
+            <div class="message-input">
+                <input type="text" id="message-text" placeholder="Type a message...">
+                <button id="send-button">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const socket = new WebSocket('ws://localhost:3000'); // Replace with your server URL
+
+        // Handle WebSocket events
+        socket.addEventListener('open', () => {
+            console.log('Connected to WebSocket server');
+        });
+
+        socket.addEventListener('message', (event) => {
+            const message = JSON.parse(event.data);
+
+            // Handle chat list update event
+            if (message.event === 'chatList') {
+                updateChatList(message.chatList);
+            }
+
+            // Handle received message
+            if (message.event === 'message') {
+                displayMessage(message.username, message.content);
+            }
+        });
+
+        socket.addEventListener('close', () => {
+            console.log('Disconnected from WebSocket server');
+        });
+
+        // Function to send a message
+        function sendMessage(content) {
+            const message = {
+                event: 'message',
+                username: getUsername(),
+                content: content
+            };
+            socket.send(JSON.stringify(message));
+        }
+
+        // Get the username from the browser's local storage
+        function getUsername() {
+            return localStorage.getItem('username');
+        }
+
+        // Set the username in the browser's local storage
+        function setUsername(username) {
+            localStorage.setItem('username', username);
+        }
+
+        // Handle login form submission
+        const loginForm = document.getElementById('login-form');
+        loginForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const usernameInput = document.getElementById('username');
+            const username = usernameInput.value.trim();
+
+            if (username) {
+                setUsername(username);
+                const loginEvent = {
+                    event: 'login',
+                    username: username
+                };
+                socket.send(JSON.stringify(loginEvent));
+                usernameInput.value = '';
+            }
+        });
+
+        // Handle send button click event
+        const sendButton = document.getElementById('send-button');
+        sendButton.addEventListener('click', () => {
+            const messageInput = document.getElementById('message-text');
+            const messageContent = messageInput.value.trim();
+
+            if (messageContent) {
+                sendMessage(messageContent);
+                messageInput.value = '';
+            }
+        });
+
+        // Update chat list
+        function updateChatList(chatList) {
+            const chatListContainer = document.querySelector('.chat-list');
+            chatListContainer.innerHTML = '';
+
+            chatList.forEach((username) => {
+                const chatItem = document.createElement('div');
+                chatItem.classList.add('chat-item');
+
+                const profileImage = document.createElement('img');
+                profileImage.src = 'profile.webp';
+                profileImage.alt = 'Profile Picture';
+
+                const chatDetails = document.createElement('div');
+                chatDetails.classList.add('chat-details');
+
+                const usernameHeading = document.createElement('h2');
+                usernameHeading.textContent = username;
+
+                const lastMessage = document.createElement('p');
+                lastMessage.textContent = 'Last message received...';
+
+                chatDetails.appendChild(usernameHeading);
+                chatDetails.appendChild(lastMessage);
+
+                chatItem.appendChild(profileImage);
+                chatItem.appendChild(chatDetails);
+
+                chatListContainer.appendChild(chatItem);
+            });
+        }
+
+        // Display a message in the chat messages section
+        function displayMessage(username, content) {
+            const chatMessages = document.getElementById('chat-messages');
+
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('message');
+
+            if (username === getUsername()) {
+                messageContainer.classList.add('sent');
+            } else {
+                messageContainer.classList.add('received');
+            }
+
+            const messageContent = document.createElement('p');
+            messageContent.textContent = username + ': ' + content;
+
+            messageContainer.appendChild(messageContent);
+            chatMessages.appendChild(messageContainer);
+        }
+    </script>
+</body>
+</html>
